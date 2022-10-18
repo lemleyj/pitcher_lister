@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1> List of all your saved players</h1>
+<body>
+        {% if len(my_players) < 1 %}
+            <h3> You have no players! </h3> 
+            <p> Add players by searching or viewing the all players page. </p>
+        {% else %}
+               
+            <table>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        {% for col_name in display_stats %}
+                        {{ col_name }}
+                        {% endfor %}
+                    </th>
+                </tr>
+                
+                {% for my_player in my_players %}
+                <tr>
+                    <td> {{ player }} </td>
+                    {% for stat in display_stats %}
+                    <td> {{ players[my_player][stat] }} </td>
+                    {% endfor %}
+                    
+                </tr>
+                {% endfor %}
+
+            </table>
+
+        {% endif %}
+
+</body>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class='container' align='center'>
+    <h1>Customize your stats here: </h1>
+    <form method="POST">
+      {{ stats_form.hidden_tag() }}
+      {{ stats_form.example }}
+      {{ stats_form.submit() }}
+  </form>
+</div>
+<div class="jumbotron">
+
+<p> It is advised that you select at least 3 statistics to display as you will likely need at least that many to make any 'real' assessments.
+  The more stats you select, the more likely it is that you could become overwhelmed. Only select the stats that are important to you!
+</p>
+<p>
+  <strong>WARNING: </strong> An error will be raised if you select less than 3. 
+</p>
+<p> Current display stats: {{display_stats}}</p>
+</div>
+{% endblock content %}
