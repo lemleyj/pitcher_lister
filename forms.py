@@ -23,7 +23,9 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 class CustomStatsForm(FlaskForm):
-    list_of_stats = ['Team','W','L','K/9','SIERA']
+    # list_of_stats = ['Team','W','L','K/9','SIERA']
+    list_of_stats = ['Season', 'Team', 'W', 'L', 'SV', 'G', 'GS', 'IP', 'K/9', 'BB/9', 'HR/9',
+                         'BABIP','LOB', 'GB', 'HR_FB', 'ERA', 'xERA', 'FIP', 'xFIP', 'WAR']
     # create a list of value/description tuples
     stats_tuples = [(x, x) for x in list_of_stats]
     example = MultiCheckboxField('Label', choices=stats_tuples)

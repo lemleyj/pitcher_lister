@@ -3,26 +3,17 @@
 
 <h1> List of all pitchers </h1>
 
-    <table class="table table-hover">
-        
+    <table>
         <tr>
-            <th>
-                Name
-            </th>
-
-            {% for col_name in display_stats %}
-            <th> {{ col_name }} </th>                
-            {% endfor %}
+            <th> Name </th>
         </tr>
-        
-        {% for player in players.keys() %}
+
+            {% for player in df.Name.unique().tolist() %}
             <tr>
-                    <td> {{ player }} </td>
-                {% for stat in display_stats %}
-                    <td> {{ players[player][stat] }} </td>
-                {% endfor %}  
+                <!-- TODO: An anchor tag to link the player to the that players page -->    
+                <td> {{ player }} </td> 
             </tr>
-        {% endfor %}
+            {% endfor %}
     </table>
 
 {% endblock %}

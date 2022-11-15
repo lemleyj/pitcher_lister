@@ -2,33 +2,23 @@
 {% block content %}
 
 {% if search_term %}
-<p> You searched for {{ search_term }} </p>
-    
-    {% if search_term in players.keys() %}
-        <table class="table table-hover">
-            <tr>
-                <th>
-                    Name
-                </th>
+    <p> You searched for {{ search_term }} </p>
 
-                {% for col_name in display_stats %}
-                <th> {{ col_name }} </th>                
-                {% endfor %}
+    {% if len_of_df > 0 %}
+    <img src= {{ img_filename }} alt="Chart of pitcher stats">
+    <div>
+        {% for table in tables %}
+            {{ titles[loop.index] }}
+            {{ table|safe }}
+        {% endfor %}
+    </div>
 
-            </tr>
-            
-            <tr>
-                <td> {{ search_term }} </td>
-
-                {% for stat in display_stats %}
-                <td> {{ players[search_term][stat] }} </td>
-                {% endfor %}  
-            </tr>
-        </table>
-        
     {% else %}
-        <p> {{ search_term }} was not found. Please use the complete name of the pitcher in the search bar.</p>
-    {% endif %}   
+    <p> No results were found. </p> 
+    {% endif %}}
+
+
+
 
 {% else %}
 <p> Please search for a pitcher: </p>
