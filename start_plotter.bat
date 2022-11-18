@@ -1,0 +1,1 @@
+call C:\Users\jleml\Anaconda3\Scripts\activate.bat flask_env & cd C:\Users\jleml\cs361\CS361_MicroService_Plot_A8-main & python Plot_MicroService_Server.py

@@ -12,20 +12,11 @@ def generate_chart(df, player, y_axis):
 
     user_input = ""
 
-    # while user_input.lower() != "exit":
-        # user_input = input("Press enter to continue or type exit: ")
-        # title = input("Title: ")
-    # player = 'Justin Verlander'
     x_axis = "Season"
-    # y_axis = "K/9"
 
     title = f"{player}: {y_axis} by {x_axis}"
     parameters = f"{title},{x_axis},{y_axis}"
 
-    # csv_file = input("CSV file: ")
-    # csv_file = "./pitcher_stats.csv"
-    # df = pd.read_csv(csv_file)  # Data_Baseball\Aaron_Nola.csv
-    # df = df[df['Name'] == player].sort_values(by=['Season'])
     df = df.to_json()
     try: 
 
@@ -40,11 +31,7 @@ def generate_chart(df, player, y_axis):
             s.send(b"\ndone_sending_data")
             data = s.recv(200000)
             fig = pickle.loads(data)
-            # dt = datetime.now()
-            # dt = dt.strftime("%m-%d-%Y_%H%M%S")
             save_name = "static/images/"+ player.replace(" ", "_") + ".png"
-            # save_name = save_name
-            # fig.savefig("output/" + save_name)
             fig.savefig(save_name)
             print("Client: figure from server saved as " + save_name)
 

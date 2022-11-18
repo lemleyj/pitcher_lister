@@ -1,0 +1,1 @@
+call C:\Users\jleml\Anaconda3\Scripts\activate.bat flask_env & cd C:\Users\jleml\cs361\my_project & python base.py
