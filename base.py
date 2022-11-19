@@ -5,7 +5,10 @@ from forms import *
 import pandas as pd
 from generate_chart import generate_chart
 
-df = pd.read_csv('pitcher_stats.csv')
+df = pd.read_csv('./pitcher_stats.csv').sort_values('Season')
+temp_df = df.drop_duplicates(['Name','playerid'], keep='last')
+id_name_dict = dict(zip(temp_df['playerid'],temp_df['Name'])) 
+last_team_dict = dict(zip(temp_df['playerid'],temp_df['Team'])) 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_secret'
@@ -14,7 +17,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 all_stats = df.columns.tolist()
-display_stats = ['Team','K/9','SIERA']
+display_stats = ['Team','K/9','xFIP']
 my_players = []
 search_term = False
 
@@ -109,13 +112,32 @@ def customize(display_stats=display_stats, df=df):
                                 session=session, display_stats=display_stats)
 
 ## TODO: Create player card for individual pitchers instead of using the search.html page
-@app.route('/pitchers/<name>', methods=['GET','POST'])
-def pitchers(name):
-    return f"You searched for {name}"    
+@app.route('/pitchers/<pitcher_id>', methods=['GET','POST'])
+def pitchers(pitcher_id, id_name_dict=id_name_dict):
+    form = SearchForm()
+    form.search_term.data = ''
+    
+    if type(pitcher_id) != 'int':
+        pitcher_id = int(pitcher_id)
+    pitcher_name = id_name_dict[pitcher_id]
+    last_team = last_team_dict[pitcher_id]
+
+    if pitcher_id in id_name_dict.keys():
+        temp_df = df[df['playerid'] == pitcher_id].sort_values('Season').reset_index()
+        table_records = temp_df.to_dict('records')
+        len_of_df = len(temp_df)
+        img_filename = generate_chart(temp_df, pitcher_name, y_axis="K/9") if len_of_df > 0 else False
+        # return f"You searched for {id_name_dict[pitcher_id]}"  
+        return render_template('pitcher_card.html', form=form, search_term=search_term, 
+                                session=session, display_stats=display_stats, img_filename=img_filename,
+                                last_team=last_team, pitcher_name=pitcher_name, table_records=table_records)
+    else:
+        return render_template('404.html', form=form), 404
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    form = SearchForm()
+    return render_template('404.html', form=form), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
