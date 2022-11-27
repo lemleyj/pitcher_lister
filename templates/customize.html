@@ -3,6 +3,7 @@
 
 <div class='container' align='center'>
     <h1>Customize your stats here: </h1>
+    <p> Current display stats: {{display_stats}}</p>
     <form method="POST">
       {{ stats_form.hidden_tag() }}
       {{ stats_form.form }}
@@ -19,6 +20,6 @@
   <strong>WARNING: </strong> An error will be raised if you select less than 3. 
 </p>
 
-<p> Current display stats: {{display_stats}}</p>
+
 </div>
 {% endblock content %}
