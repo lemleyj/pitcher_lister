@@ -13,6 +13,7 @@
     <table class="table" style="width:80%">
         <tr>
             <th> Season </th>
+            <th> Team </th>
             {% for stat in display_stats %}
             <th> {{ stat }} </th>
             {% endfor %}
@@ -21,6 +22,9 @@
             <tr> 
                 <td>
                     {{ record['Season'] }}
+                </td>
+                <td>
+                    {{ record['Team'] }}
                 </td>
                 {% for stat in display_stats %}
                 <td> {{ record[stat] }} </td>

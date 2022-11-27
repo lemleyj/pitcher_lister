@@ -1,8 +1,4 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, get_flashed_messages
-# from flask_session import Session
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_migrate import Migrate
-# from flask_login import LoginManager,current_user,login_required
 
 from forms import *
 import pandas as pd
@@ -10,7 +6,7 @@ from generate_chart import generate_chart
 import pickle
 # import os
 
-df = pd.read_csv('./pitcher_stats.csv').sort_values('Season')
+df = pd.read_csv('./pitcher_stats.csv').sort_values('Season').round(3)
 temp_df = df.drop_duplicates(['Name','playerid'], keep='last')
 id_name_dict = dict(zip(temp_df['playerid'],temp_df['Name'])) 
 name_id_dict = dict(zip(temp_df['Name'],temp_df['playerid'])) 
@@ -18,20 +14,13 @@ last_team_dict = dict(zip(temp_df['playerid'],temp_df['Team']))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_secret'
-# app.config["SESSION_PERMANENT"] = False
-# app.config["SESSION_TYPE"] = "filesystem"
-# Session(app)
-
-# basedir = os.path.abspath(os.path.dirname(__file__))
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 all_stats = df.columns.tolist()
 try:
     with open('display_stats.pickle', 'rb') as f:
         display_stats = pickle.load(f)
 except:
-    display_stats = ['Team','K/9','xFIP']
+    display_stats = ['K/9','xFIP']
     with open('display_stats.pickle', 'wb') as f:
         pickle.dump(display_stats, f)
 
@@ -50,14 +39,7 @@ def index():
         form.search_term.data = ''
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
-        # temp_df = df[df['Name'] == search_term].sort_values('Season')
-        # len_of_df = len(temp_df)
-        # img_filename = generate_chart(temp_df, search_term, y_axis="K/9") if len_of_df > 0 else False
-        # form.search_term.data = ''
-        
-        # return render_template('search.html', img_filename=img_filename, len_of_df=len_of_df, tables=[temp_df.to_html(classes='data',header="true", table_id="table",index=False)], 
-        #                                     titles=temp_df.columns.values, form=form, search_term=search_term, display_stats=display_stats, df=df)
-    
+
     else: 
         return render_template('index.html', form=form, session=session)
 
@@ -74,43 +56,8 @@ def list_of_pitchers(df=df):
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
 
-    # if form.validate_on_submit():
-    #     search_term = form.search_term.data
-    #     temp_df = df[df['Name'] == search_term].sort_values('Season')
-    #     len_of_df = len(temp_df)
-    #     img_filename = generate_chart(temp_df, search_term, y_axis="K/9") if len_of_df > 0 else False
-    #     form.search_term.data = ''
-        
-    #     return render_template('search.html', img_filename=img_filename, len_of_df=len_of_df, tables=[temp_df.to_html(classes='data',header="true", table_id="table",index=False)], 
-    #                                         titles=temp_df.columns.values, form=form, search_term=search_term, display_stats=display_stats, df=df)
-
     return render_template('list_of_pitchers.html', form=form, search_term=search_term, session=session, 
                                     display_stats=display_stats, df=df, name_id_dict=name_id_dict, last_team_dict=last_team_dict)
-
-# @app.route('/search', methods=['GET','POST'])
-# def search():
-    
-#     search_term = False
-#     form = SearchForm()
-
-#     if form.validate_on_submit():
-#         search_term = form.search_term.data
-#         pitcher_id = name_id_dict[search_term]
-#         form.search_term.data = ''
-#         if pitcher_id is not None:
-#             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
-
-    # if form.validate_on_submit():
-    #     search_term = form.search_term.data
-    #     temp_df = df[df['Name'] == search_term].sort_values('Season')
-    #     len_of_df = len(temp_df)
-    #     img_filename = generate_chart(temp_df, search_term, y_axis="K/9") if len_of_df > 0 else False
-    #     form.search_term.data = ''
-        
-    #     return render_template('search.html', img_filename=img_filename, len_of_df=len_of_df, tables=[temp_df.to_html(classes='data',header="true", table_id="table",index=False)], 
-    #                                         titles=temp_df.columns.values, form=form, search_term=search_term, display_stats=display_stats, df=df)
-    
-    return render_template('search.html', form=form, search_term=search_term, session=session, len_of_df=0)
 
 
 @app.route('/customize', methods=['GET','POST'])
@@ -126,25 +73,17 @@ def customize(display_stats=display_stats, df=df):
         form.search_term.data = ''
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
-
-    # if form.validate_on_submit():
-    #     search_term = form.search_term.data
-    #     temp_df = df[df['Name'] == search_term].sort_values('Season')
-    #     len_of_df = len(temp_df)
-    #     img_filename = generate_chart(temp_df, search_term, y_axis="K/9") if len_of_df > 0 else False
-    #     form.search_term.data = ''
-        
-    #     return render_template('search.html', img_filename=img_filename, len_of_df=len_of_df, tables=[temp_df.to_html(classes='data',header="true", table_id="table",index=False)], 
-    #                                         titles=temp_df.columns.values, form=form, search_term=search_term, display_stats=display_stats, df=df)
     
     if stats_form.validate_on_submit():            
         if len(stats_form.form.data) <= 2:
             flash('You did not select enough stats. Please select at least 2 to display', 'warning')
         else:
-            # flash('If you wish to revert back to default, simply click the "List of Pitchers" tab at the top and it will reset', 'secondary')
             if len(stats_form.form.data) >= 5:
                 flash('You have selected a lot of stats which could lead to being overwhelmed!! Use the "Customize" tab to lower the amount of stats displayed', 'danger')
             display_stats = stats_form.form.data
+            with open('display_stats.pickle', 'wb') as f:
+                pickle.dump(display_stats, f)
+            
             stats_form.form.data = ''
             return render_template('list_of_pitchers.html', df=df, form=form, search_term=search_term, session=session, 
                                     display_stats=display_stats, name_id_dict=name_id_dict, last_team_dict=last_team_dict)
@@ -152,12 +91,13 @@ def customize(display_stats=display_stats, df=df):
     return render_template('customize.html', form=form, stats_form=stats_form, search_term=search_term, 
                                 session=session, display_stats=display_stats)
 
-## TODO: Create player card for individual pitchers instead of using the search.html page
+
 @app.route('/pitchers/<pitcher_id>', methods=['GET','POST'])
 def pitchers(pitcher_id, id_name_dict=id_name_dict):
     search_term = False
     form = SearchForm()
-    # form.search_term.data = ''
+    with open('display_stats.pickle', 'rb') as f:
+        display_stats = pickle.load(f)
 
     if form.validate_on_submit():
         search_term = form.search_term.data
@@ -177,7 +117,6 @@ def pitchers(pitcher_id, id_name_dict=id_name_dict):
         len_of_df = len(temp_df)
         img_filename = generate_chart(temp_df, pitcher_name, y_axis="K/9") if len_of_df > 0 else False
         print(img_filename)
-        # return f"You searched for {id_name_dict[pitcher_id]}"  
         return render_template('pitcher_card.html', form=form, search_term=search_term, 
                                 session=session, display_stats=display_stats, img_filename=img_filename,
                                 last_team=last_team, pitcher_name=pitcher_name, table_records=table_records)
