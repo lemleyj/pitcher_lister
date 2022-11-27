@@ -1,7 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    <h1 style="text-align:left;margin-left:50px"> <img src= "../static/images/team_logos/{{ last_team }}.png" alt="team logo" class="img-thumbnail" width="4%" height="4%"> {{ pitcher_name }}</h1>
+    <h1 style="text-align:left;margin-left:50px"> <img src= "../static/images/team_logos/{{ last_team }}.png" alt="team logo" class="img-thumbnail" width="4%" height="4%"> {{ pitcher_name }} </h1>
+    <h5 style="text-align:left;margin-left:50px"> Pitcher Rank: {{ rank }} </h5>
+    <h2>
+    {% if rank <= 10 %}
+        This pitcher is REALLY GOOD!
+    {% elif rank <= 30 %}
+        This pitcher is pretty good.
+    {% elif rank <= 75 %}
+        This pitcher is alright.
+    {% else %}
+        This pitcher is not very good.
+    {% endif %}
+    </h2>
+
     <hr class="my-4">
 </div>
 

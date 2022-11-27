@@ -4,17 +4,17 @@ from forms import *
 import pandas as pd
 from generate_chart import generate_chart
 import pickle
-# import os
 
+# read csvs
 df = pd.read_csv('./pitcher_stats.csv').sort_values('Season').round(3)
 temp_df = df.drop_duplicates(['Name','playerid'], keep='last')
+ranks_df = pd.read_csv('pitcher_ranks.csv')
+
+# establish variables
 id_name_dict = dict(zip(temp_df['playerid'],temp_df['Name'])) 
 name_id_dict = dict(zip(temp_df['Name'],temp_df['playerid'])) 
 last_team_dict = dict(zip(temp_df['playerid'],temp_df['Team'])) 
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'my_secret'
-
+id_rank_dict = dict(zip(ranks_df['playerid'],ranks_df['rank'])) 
 all_stats = df.columns.tolist()
 try:
     with open('display_stats.pickle', 'rb') as f:
@@ -24,8 +24,8 @@ except:
     with open('display_stats.pickle', 'wb') as f:
         pickle.dump(display_stats, f)
 
-# my_players = []
-# search_term = False
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'my_secret'
 
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -39,13 +39,11 @@ def index():
         form.search_term.data = ''
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
-
     else: 
         return render_template('index.html', form=form, session=session)
 
 @app.route('/list_of_pitchers', methods=['GET','POST'])
 def list_of_pitchers(df=df):
-    
     search_term = False
     form = SearchForm()
 
@@ -61,8 +59,7 @@ def list_of_pitchers(df=df):
 
 
 @app.route('/customize', methods=['GET','POST'])
-# @login_required
-def customize(display_stats=display_stats, df=df):
+def customize(display_stats=display_stats):
     search_term = False
     stats_form = CustomStatsForm()
     form = SearchForm()
@@ -96,6 +93,7 @@ def customize(display_stats=display_stats, df=df):
 def pitchers(pitcher_id, id_name_dict=id_name_dict):
     search_term = False
     form = SearchForm()
+
     with open('display_stats.pickle', 'rb') as f:
         display_stats = pickle.load(f)
 
@@ -112,6 +110,7 @@ def pitchers(pitcher_id, id_name_dict=id_name_dict):
     last_team = last_team_dict[pitcher_id]
 
     if pitcher_id in id_name_dict.keys():
+        rank = id_rank_dict[pitcher_id]
         temp_df = df[df['playerid'] == pitcher_id].sort_values('Season').reset_index()
         table_records = temp_df.to_dict('records')
         len_of_df = len(temp_df)
@@ -119,7 +118,7 @@ def pitchers(pitcher_id, id_name_dict=id_name_dict):
         print(img_filename)
         return render_template('pitcher_card.html', form=form, search_term=search_term, 
                                 session=session, display_stats=display_stats, img_filename=img_filename,
-                                last_team=last_team, pitcher_name=pitcher_name, table_records=table_records)
+                                last_team=last_team, pitcher_name=pitcher_name, table_records=table_records, rank=rank)
     else:
         return render_template('404.html', form=form), 404
 
