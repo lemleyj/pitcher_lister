@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash, get_flashed_messages
-
+from flask import Flask, render_template, redirect, url_for, flash
 from forms import *
 import pandas as pd
 from generate_chart import generate_chart
@@ -40,7 +39,7 @@ def index():
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
     else: 
-        return render_template('index.html', form=form, session=session)
+        return render_template('index.html', form=form)
 
 @app.route('/list_of_pitchers', methods=['GET','POST'])
 def list_of_pitchers(df=df):
@@ -54,7 +53,7 @@ def list_of_pitchers(df=df):
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
 
-    return render_template('list_of_pitchers.html', form=form, search_term=search_term, session=session, 
+    return render_template('list_of_pitchers.html', form=form, search_term=search_term,
                                     display_stats=display_stats, df=df, name_id_dict=name_id_dict, last_team_dict=last_team_dict)
 
 
@@ -82,11 +81,10 @@ def customize(display_stats=display_stats):
                 pickle.dump(display_stats, f)
             
             stats_form.form.data = ''
-            return render_template('list_of_pitchers.html', df=df, form=form, search_term=search_term, session=session, 
+            return render_template('list_of_pitchers.html', df=df, form=form, search_term=search_term,
                                     display_stats=display_stats, name_id_dict=name_id_dict, last_team_dict=last_team_dict)
 
-    return render_template('customize.html', form=form, stats_form=stats_form, search_term=search_term, 
-                                session=session, display_stats=display_stats)
+    return render_template('customize.html', form=form, stats_form=stats_form, search_term=search_term, display_stats=display_stats)
 
 
 @app.route('/pitchers/<pitcher_id>', methods=['GET','POST'])
@@ -117,7 +115,7 @@ def pitchers(pitcher_id, id_name_dict=id_name_dict):
         img_filename = generate_chart(temp_df, pitcher_name, y_axis="K/9") if len_of_df > 0 else False
         print(img_filename)
         return render_template('pitcher_card.html', form=form, search_term=search_term, 
-                                session=session, display_stats=display_stats, img_filename=img_filename,
+                                display_stats=display_stats, img_filename=img_filename,
                                 last_team=last_team, pitcher_name=pitcher_name, table_records=table_records, rank=rank)
     else:
         return render_template('404.html', form=form), 404
