@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    <h1 align="left"> <img src= "../static/images/team_logos/{{ last_team }}.png" alt="team logo" class="img-thumbnail" width="4%" height="4%"> {{ last_team}} - {{ pitcher_name }}</h1>
+    <h1 style="text-align:left;margin-left:50px"> <img src= "../static/images/team_logos/{{ last_team }}.png" alt="team logo" class="img-thumbnail" width="4%" height="4%"> {{ pitcher_name }}</h1>
     <hr class="my-4">
-    <img src= {{ img_filename }} alt="Chart of pitcher stats">
-    <table class="table">
+</div>
+
+<div style="margin: 25px;">
+    <img src= "../{{ img_filename }}" alt="Chart of pitcher stats">
+</div>
+
+<div>
+    <table class="table" style="width:80%">
         <tr>
             <th> Season </th>
             {% for stat in display_stats %}
@@ -22,12 +28,7 @@
             </tr>
             {% endfor %}
 
-
-        <!-- {% for record in table_records %}
-            <p> {{ record }} </p>
-        {% endfor %} -->
     </table>
 </div>
-
 
 {% endblock content %}

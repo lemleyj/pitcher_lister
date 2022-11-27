@@ -21,12 +21,12 @@
       <li class='nav-item'>
         <a class="nav-link" href="{{ url_for('customize') }}"> Customize</a>
       </li>
-      <li class='nav-item mr-auto'>
+      <li class='nav-item'>
         <form method="POST", class='form-inline my-2 my-lg-0')>
           {{ form.hidden_tag() }}
-          {{ form.search_term() }} 
+          {{ form.search_term() }} &nbsp
           {{ form.submit() }}
-      </form>
+        </form>
       </li>
     </ul>
   </nav>
