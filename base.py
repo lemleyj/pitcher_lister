@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, get_flashed_messages
 from forms import *
 import pandas as pd
 from generate_chart import generate_chart
@@ -30,7 +30,7 @@ app.config['SECRET_KEY'] = 'my_secret'
 def index():
     search_term = False
     form = SearchForm()
-    flash('You can now use the "Customize" tab to tailor what stats are shown to you!', 'info')
+    flash('New Features: The "Customize" feature now follows along with you as you viewed additional pitchers, and a new player ranking has been added to each player card!', 'info')
 
     if form.validate_on_submit():
         search_term = form.search_term.data
@@ -38,8 +38,8 @@ def index():
         form.search_term.data = ''
         if pitcher_id is not None:
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
-    else: 
-        return render_template('index.html', form=form)
+    
+    return render_template('index.html', form=form)
 
 @app.route('/list_of_pitchers', methods=['GET','POST'])
 def list_of_pitchers(df=df):
@@ -71,6 +71,12 @@ def customize(display_stats=display_stats):
             return redirect(url_for(f'pitchers', pitcher_id=pitcher_id))
     
     if stats_form.validate_on_submit():            
+        if stats_form.reset.data:
+            display_stats = ['K/9','xFIP']
+            with open('display_stats.pickle', 'wb') as f:
+                pickle.dump(display_stats, f)
+            return redirect(url_for('list_of_pitchers'))
+        
         if len(stats_form.form.data) <= 2:
             flash('You did not select enough stats. Please select at least 2 to display', 'warning')
         else:
@@ -81,8 +87,8 @@ def customize(display_stats=display_stats):
                 pickle.dump(display_stats, f)
             
             stats_form.form.data = ''
-            return render_template('list_of_pitchers.html', df=df, form=form, search_term=search_term,
-                                    display_stats=display_stats, name_id_dict=name_id_dict, last_team_dict=last_team_dict)
+
+            return redirect(url_for('list_of_pitchers'))
 
     return render_template('customize.html', form=form, stats_form=stats_form, search_term=search_term, display_stats=display_stats)
 

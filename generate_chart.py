@@ -19,7 +19,6 @@ def generate_chart(df, player, y_axis):
 
     df = df.to_json()
     try: 
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((HOST, PORT))
             s.send(bytes(parameters, encoding="utf-8"))
@@ -31,7 +30,7 @@ def generate_chart(df, player, y_axis):
             s.send(b"\ndone_sending_data")
             data = s.recv(200000)
             fig = pickle.loads(data)
-            save_name = "static/images/"+ player.replace(" ", "_") + ".png"
+            save_name = "static/images/players/"+ player.replace(" ", "_") + ".png"
             fig.savefig(save_name)
             print("Client: figure from server saved as " + save_name)
 

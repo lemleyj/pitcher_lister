@@ -11,7 +11,6 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(html_tag="ul", prefix_label=True)
     option_widget = widgets.CheckboxInput()
 
-
 class CustomStatsForm(FlaskForm):
     list_of_stats = ['W', 'L', 'SV', 'G', 'GS', 'IP', 'K/9', 'BB/9', 'HR/9',
                          'BABIP','LOB', 'GB', 'HR_FB', 'ERA','FIP', 'xFIP', 'WAR']
@@ -19,3 +18,5 @@ class CustomStatsForm(FlaskForm):
     form = MultiCheckboxField('Label', choices=stats_tuples)
     submit = SubmitField('Submit',
                        render_kw={'class': 'btn btn-outline-success my-2 my-sm-0'})
+
+    reset = SubmitField('Reset Stats', render_kw={'class': 'btn btn-outline-danger my-2 my-sm-0'})
