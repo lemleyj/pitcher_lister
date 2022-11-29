@@ -132,4 +132,4 @@ def page_not_found(e):
     return render_template('404.html', form=form), 404
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
