@@ -1,14 +1,13 @@
 import pandas as pd
 import socket
 import pickle
-from datetime import datetime
 
 def generate_chart(df, player, y_axis):
     """
     Sends a request to my partner's microservice to generate a graphic for the pitcher. 
     """
-    HOST = "127.0.0.1"  # The server's hostname or IP address
-    PORT = 65432  # The port used by the server
+    HOST = "127.0.0.1" 
+    PORT = 65432  
 
     user_input = ""
 

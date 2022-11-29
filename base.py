@@ -1,10 +1,11 @@
+# imports
 from flask import Flask, render_template, redirect, url_for, flash, get_flashed_messages
 from forms import *
 import pandas as pd
 from generate_chart import generate_chart
 import pickle
 
-# read csvs
+# read in data
 df = pd.read_csv('./pitcher_stats.csv').sort_values('Season').round(3)
 temp_df = df.drop_duplicates(['Name','playerid'], keep='last')
 ranks_df = pd.read_csv('pitcher_ranks.csv')
@@ -19,9 +20,10 @@ try:
     with open('display_stats.pickle', 'rb') as f:
         display_stats = pickle.load(f)
 except:
-    display_stats = ['K/9','xFIP']
+    display_stats = ['ERA','W','L']
     with open('display_stats.pickle', 'wb') as f:
         pickle.dump(display_stats, f)
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_secret'
@@ -62,6 +64,8 @@ def customize(display_stats=display_stats):
     search_term = False
     stats_form = CustomStatsForm()
     form = SearchForm()
+    with open('display_stats.pickle', 'rb') as f:
+        display_stats = pickle.load(f)
 
     if form.validate_on_submit():
         search_term = form.search_term.data
@@ -72,7 +76,7 @@ def customize(display_stats=display_stats):
     
     if stats_form.validate_on_submit():            
         if stats_form.reset.data:
-            display_stats = ['K/9','xFIP']
+            display_stats = ['ERA','W','L']
             with open('display_stats.pickle', 'wb') as f:
                 pickle.dump(display_stats, f)
             return redirect(url_for('list_of_pitchers'))
