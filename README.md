@@ -6,7 +6,7 @@ It was created as a portfolio project for Software Engineering I and is not inte
 
 Video explaining use (for assignment): https://media.oregonstate.edu/media/t/1_whtbcg4n
 
-The video is sttuctured to answer the following questions: 
+The video is structured to answer the following questions: 
 
 - Show/explain each feature of the project and how it works
 - Show the feature that uses the microservice that a partner provided
